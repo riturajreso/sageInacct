@@ -17,7 +17,10 @@ body, html {
   cursor: pointer;
   padding: 14px 16px;
   font-size: 17px;
-  width: 25%;
+  width: 16%;
+}
+.nav-bar{
+  margin-left:45px; 
 }
 
 .tablink:hover {
@@ -60,4 +63,7 @@ textarea {
 }
 textarea:focus {
   border: 1px solid #555;
+}
+.table,.table-responsive{
+  width: 60%;
 }
