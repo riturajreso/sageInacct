@@ -97,14 +97,7 @@
 		    	$err = true;  
 		    }    
 		}
-		if (empty($_REQUEST['cDetail'])){  
-		    $error_array_name['cDetailErr'] = "Error! You didn't enter the DOB.";
-		    $err = true;   
-		}
-		else
-		{  
-		    $cDetail = test_input($_REQUEST['cDetail']);  
-		}
+		$cDetail = test_input($_REQUEST['cDetail']);
 		if($err == true){
 			echo json_encode(array('portal'=>(array('err'=>2 ,'msg'=>'Error','error_array_name'=>$error_array_name))));
 		}
@@ -132,7 +125,7 @@
     else if($fun_type == 'editStudentList')
     {
     	$stu_id = $_REQUEST['stu_id'];
-    	if(isset($stu_id) && $stu_id!= null && $stu_id!= undefined)
+    	if(isset($stu_id) && $stu_id!= null)
     	{
     		echo $funObj->editStudentList($stu_id);	
     	}
@@ -141,7 +134,7 @@
     else if($fun_type == 'editCourse')
     {
     	$c_id = $_REQUEST['c_id'];
-    	if(isset($c_id) && $c_id!= null && $c_id!= undefined)
+    	if(isset($c_id) && $c_id!= null)
     	{
     		echo $funObj->editCourse($c_id);	
     	}
@@ -151,7 +144,7 @@
     	$err = false;
 		$error_array_name = [];
 		$id = $_REQUEST['id'];
-    	if(isset($id) && $id!= null && $id!= undefined)
+    	if(isset($id) && $id!= null)
     	{
     		$stu_id  =  $id;
     	}
@@ -198,7 +191,7 @@
     	$err = false;
 		$error_array_name = [];
 		$id = $_REQUEST['id'];
-    	if(isset($id) && $id!= null && $id!= undefined)
+    	if(isset($id) && $id!= null)
     	{
     		$cid  =  $id;
     	}
@@ -232,7 +225,7 @@
     	$err = false;
 		$error_array_name = [];
 		$id = $_REQUEST['id'];
-    	if(isset($id) && $id!= null && $id!= undefined)
+    	if(isset($id) && $id!= null)
     	{
     		$cid  =  $id;
     	}
@@ -254,7 +247,7 @@
     	$err = false;
 		$error_array_name = [];
 		$id = $_REQUEST['id'];
-    	if(isset($id) && $id!= null && $id!= undefined)
+    	if(isset($id) && $id!= null)
     	{
     		$cid  =  $id;
     	}
@@ -270,5 +263,58 @@
 		{
 			echo $funObj->delCourse($cid);	
 		}
+    }
+    else if($fun_type == 'getAllDetails')
+    {
+    	$finalArray = [];
+    	$studentList = $funObj->getStudentList();
+    	$studentList = json_decode($studentList,true);
+    	if($studentList['portal']['err'] == 0)
+    	{
+    		$finalArray['student'] = $studentList['portal']['result'];
+    	}
+    	$courseList = $funObj->getCourseList();	
+    	$courseList = json_decode($courseList,true);
+    	if($courseList['portal']['err'] == 0)
+    	{
+    		$finalArray['course'] = $courseList['portal']['result'];
+    	}
+    	echo json_encode($finalArray);
+    }
+    else if($fun_type == 'saveMapping')
+    {
+    	$err = false;
+		$error_array_name = [];
+		$sel_stu = $_REQUEST['sel_stu'];
+		$sel_cor = $_REQUEST['sel_cor'];
+    	if(isset($sel_stu) && $sel_stu!= null)
+    	{
+    		$sel_stu_id  =  $sel_stu;
+    	}
+    	else
+    	{
+    		$error_array_name['stu_subErr'] = "Error! Please try again.";
+		    $err = true;
+    	}
+    	if(isset($sel_cor) && $sel_cor!= null)
+    	{
+    		$sel_cor_id  =  $sel_cor;
+    	}
+    	else
+    	{
+    		$error_array_name['cour_subErr'] = "Error! Please try again.";
+		    $err = true;
+    	}
+    	if($err == true){
+			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
+		}
+		else
+		{
+			echo $funObj->saveMapping($sel_stu_id,$sel_cor_id);	
+		}
+    }
+    else if($fun_type == 'getReport')
+    {
+    	echo $funObj->getReport();	
     }
 ?> 

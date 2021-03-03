@@ -6,12 +6,12 @@
 </head>
 <body>
 	<div class="nav-bar">
-		<button class="tablink" onclick="openPage('Registration')" id="defaultOpen">Registration</button>
-		<button class="tablink" onclick="openPage('viewStudent')" id="listStudent">Student List</button>
-		<button class="tablink" onclick="openPage('Course')">Course</button>
-		<button class="tablink" onclick="openPage('viewCourse')" id="listCourse">Course List</button>
-		<button class="tablink" onclick="openPage('Subscribe')">Subscribe</button>
-		<button class="tablink" onclick="openPage('Report')">Report</button>	
+		<button class="tablink" onclick="openPage('Registration','defaultOpen')" id="defaultOpen">Registration</button>
+		<button class="tablink" onclick="openPage('viewStudent','listStudent')" id="listStudent">Student List</button>
+		<button class="tablink" onclick="openPage('Course','addCourse')" id="addCourse">Course</button>
+		<button class="tablink" onclick="openPage('viewCourse','listCourse')" id="listCourse">Course List</button>
+		<button class="tablink" onclick="openPage('Subscribe','subcribe')" id="subcribe">Subscribe</button>
+		<button class="tablink" onclick="openPage('Report','viewReport')" id="viewReport">Report</button>	
 	</div>
 	<div id="Registration" class="tabcontent">
 		<h3>Registration</h3>
@@ -111,10 +111,41 @@
 	</div>
 	<div id="Subscribe" class="tabcontent">
 		<h3>Student Course Registration</h3>
-		<p>Get in touch, or swing by for a cup of coffee.</p>
+		<div class="row diff">
+			<div class="col-md-3">
+				<center><label>Student </label></center>
+					<select class="selectMar" id="studentList">
+					</select>
+				<span class="red error-display stu_subErr" id="stu_subErr"></span>	
+			</div>
+			<div class="col-md-3">
+				<center><label>Course </label></center>
+					<select class="selectMar" id="courseList">
+					</select>
+				<span class="red error-display cour_subErr" id="cour_subErr"></span>	
+			</div>
+			<div class="col-md-3">
+				<span class="glyphicon glyphicon-plus" id="add" title="Add Another"></span>
+			</div>	
+		</div>
+		<div class="row diff">
+			<input type="button" class="mapping" name="mapping" id="mapping" value="Submit">
+			<span class="error-display" id="mapping_msg"></span>
+		</div>
 	</div>
 	<div id="Report" class="tabcontent">
-		<h3>Report</h3>	
+		<h3>Report</h3>
+		<div class="table-responsive">
+          	<table class="table table-hover table-bordered" id="contents">
+	            <thead>
+	            	<tr>
+	                <th>Student Name</th>
+	                <th>Course Name</th>
+	              	</tr>
+	            </thead>
+            	<tbody id="reportListTBody"></tbody>
+        	</table>
+        </div>	
 	</div>
 
 	<div class="modal fade" id="edit_req" role="dialog">

@@ -250,6 +250,47 @@ class Modal {
         catch(PDOException $ex){
             return json_encode(array('portal' => array('err' => 1, 'update' => 0,'msg'=>$ex)));
         }    
+    }
+
+    public function saveMapping($sel_stu_id,$sel_cor_id)
+    {
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $connect->beginTransaction();
+            $statement = $connect->prepare('INSERT INTO course_registration (stud_id,cousre_id)
+                VALUES (:sel_stu_id, :sel_cor_id)');
+            $data = [
+                'sel_stu_id' => $sel_stu_id,
+                'sel_cor_id' => $sel_cor_id,
+            ];
+            $statement->execute($data);
+            $id = $connect->lastInsertId();
+            $connect->commit();
+            return json_encode(array('portal' => array('err' => 0, 'inserted' => 1,'msg'=>'success','mapping_id'=>$id)));
+        }
+        catch(PDOException $ex){
+            $db->rollback();
+            return json_encode(array('portal' => array('err' => 1, 'inserted' => 0,'msg'=>$ex,'mapping_id'=>'')));
+        }    
+    }
+
+    public function getReport()
+    {
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('SELECT CONCAT(stu_name," ",stu_Lname) as Name, cname FROM course_registration LEFT JOIN course on course.cid = course_registration.cousre_id LEFT JOIN registration on registration.stu_id = course_registration.stud_id');
+            $statement->execute();
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            return json_encode(array('portal' => array('err' => 0, 'inserted' => 0,'msg'=>'success','result'=>$result)));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'inserted' => 0,'msg'=>$ex,'result'=>'')));
+        }
     }    
 }  
 ?> 

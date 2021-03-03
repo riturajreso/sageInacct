@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$("#defaultOpen").click();
 	clearRegistration();
 	$("#registration").on('click',function(){
+		$('.error-display').text('').hide();
 		var valid = ValidateStu();
 		if(valid == 1)
 		{
@@ -46,6 +47,7 @@ $(document).ready(function(){
 	});
 
 	$("#couserSubmit").on('click',function(){
+		$('.error-display').text('').hide();
 		var valid = ValidateCourse();
 		if(valid == 1)
 		{
@@ -88,6 +90,7 @@ $(document).ready(function(){
 	});
 
 	$("#listStudent").on('click',function(){
+		$('.error-display').text('').hide();
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'GET',
@@ -99,24 +102,31 @@ $(document).ready(function(){
 				var count = data.portal.result.length;
 				var stuList  = data.portal.result;
 				var html = '';
-				for(var i=0; i < count ; i++){
-					html += '<tr>';
-					html += '<td>';
-        		    html += '<a href="#" class="edit_student" id="'+stuList[i].stu_id+'">Edit</a>';
-        			html += '</td>';
+				if(count>0)
+				{
+					for(var i=0; i < count ; i++){
+						html += '<tr>';
+						html += '<td>';
+	        		    html += '<a href="#" class="edit_student" id="'+stuList[i].stu_id+'">Edit</a>';
+	        			html += '</td>';
 
-        			html += '<td>';
-        		    html += stuList[i].stu_name;
-        			html += '</td>';
+	        			html += '<td>';
+	        		    html += stuList[i].stu_name;
+	        			html += '</td>';
 
-        			html += '<td>';
-        		    html += stuList[i].stu_Lname;
-        			html += '</td>';
-					
-					html += '<td>';
-					html += '<a href="#" class="delete_student icon-green" id="'+stuList[i].stu_id+'">Delete</a>';
-        			html += '</td>';
-        			html += '</tr>';        
+	        			html += '<td>';
+	        		    html += stuList[i].stu_Lname;
+	        			html += '</td>';
+						
+						html += '<td>';
+						html += '<a href="#" class="delete_student icon-green" id="'+stuList[i].stu_id+'">Delete</a>';
+	        			html += '</td>';
+	        			html += '</tr>';        
+					}	
+				}
+				else
+				{
+					html += '<span class="red">No records found.</span>';
 				}
 				$('#studentListTBody').html(html);
             	$('[data-toggle="tooltip"]').tooltip();
@@ -127,6 +137,7 @@ $(document).ready(function(){
 	});
 
 	$("#listCourse").on('click',function(){
+		$('.error-display').text('').hide();
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'GET',
@@ -137,20 +148,27 @@ $(document).ready(function(){
 			var count = data.portal.result.length;
 			var courseList  = data.portal.result;
 			var html = '';
-			for(var i=0; i < count ; i++){
-				html += '<tr>';
-				html += '<td>';
-    		    html += '<a href="#" class="edit_Course icon-green" id="'+courseList[i].cid+'">Edit</a>';
-    			html += '</td>';
+			if(count>0)
+			{
+				for(var i=0; i < count ; i++){
+					html += '<tr>';
+					html += '<td>';
+	    		    html += '<a href="#" class="edit_Course icon-green" id="'+courseList[i].cid+'">Edit</a>';
+	    			html += '</td>';
 
-    			html += '<td>';
-    		    html += courseList[i].cname;
-    			html += '</td>';
+	    			html += '<td>';
+	    		    html += courseList[i].cname;
+	    			html += '</td>';
 
-    			html += '<td>';
-				html += '<a href="#" class=delete_Course icon-green" id="'+courseList[i].cid+'">Delete</a>';
-    			html += '</td>';
-    			html += '</tr>';        
+	    			html += '<td>';
+					html += '<a href="#" class=delete_Course icon-green" id="'+courseList[i].cid+'">Delete</a>';
+	    			html += '</td>';
+	    			html += '</tr>';        
+				}
+			}
+			else
+			{
+				html += '<span class="red">No records found.</span>';
 			}
 			$('#courseListTBody').html(html);
         	$('[data-toggle="tooltip"]').tooltip();
@@ -159,6 +177,145 @@ $(document).ready(function(){
 		});
 	});
 
+	$("#subcribe").on('click',function(){
+		$('.error-display').text('').hide();
+		$.ajax({
+			url: "controller/Controller.php",
+			type: 'POST',
+			cache: false,
+			data: {'function':'getAllDetails'}
+		}).done(function(data){
+			var data = JSON.parse(data);
+			var studentList  =  data.student;
+			var courseList  =  data.course;
+			var studentHtml = courseHtml = '<option value=""> Select </option>';
+			if(studentList.length > 0)
+			{
+				for(var i=0; i<studentList.length;i++)
+				{
+					studentHtml += '<option value="'+studentList[i].stu_id+'">'+studentList[i].stu_name+' '+studentList[i].stu_Lname+'</option>';
+				}
+				$("#studentList").html(studentHtml);
+			}
+			else
+			{
+				$("#studentList").html(studentHtml);
+				$("#stu_subErr").text('No records found.').show();
+			}
+			if(courseList.length > 0)
+			{
+				for(var i=0; i<courseList.length;i++)
+				{
+					courseHtml += '<option value="'+courseList[i].cid+'">'+courseList[i].cname+'</option>';
+				}
+				$("#courseList").html(courseHtml);
+			}
+			else
+			{
+				$("#courseList").html(courseHtml);
+				$("#cour_subErr").text('No records found.').show();
+			}
+		});
+	});
+
+	$("#viewReport").on('click',function(){
+		$('.error-display').text('').hide();
+		$.ajax({
+			url: "controller/Controller.php",
+			type: 'GET',
+			cache: false,
+			data: {'function':'getReport'}
+		}).done(function(data){
+			var data = JSON.parse(data);
+			console.log(data);
+			var count = data.portal.result.length;
+			var reportList  = data.portal.result;
+			var html = '';
+			if(count>0)
+			{
+				for(var i=0; i < count ; i++){
+					html += '<tr>';
+					
+					html += '<td>';
+	    		    html += reportList[i].Name;
+	    			html += '</td>';
+
+	    			html += '<td>';
+	    		    html += reportList[i].cname;
+	    			html += '</td>';
+
+	    			html += '</tr>';        
+				}
+			}
+			else
+			{
+				html += '<span class="red">No records found.</span>';
+			}
+			$('#reportListTBody').html(html);
+        	$('[data-toggle="tooltip"]').tooltip();
+		}).fail(function(){
+
+		});		
+	});
+
+	$("#add").on('click',function(){
+		$('.error-display').text('').hide();
+		$("#studentList").val('');
+		$("#courseList").val('');
+	});
+		
+	$(document).on("click","#mapping",function(){
+		$('.error-display').text('').hide();
+		var sel_stu = $("#studentList").val();
+		var sel_cor = $("#courseList").val();
+		var valid = 1;
+		if(sel_stu ==null || sel_stu== '' || sel_stu== undefined)
+		{
+			valid  = 0;
+			$("#stu_subErr").text('Please select student.').show();
+		}
+		if(sel_cor ==null || sel_cor== '' || sel_cor== undefined)
+		{
+			valid  = 0;
+			$("#cour_subErr").text('Please select course.').show();
+		}
+		if(valid == 1)
+		{
+			$.ajax({
+				url: "controller/Controller.php",
+				type: 'POST',
+				cache: false,
+				data: {'function':'saveMapping','sel_stu':sel_stu,'sel_cor':sel_cor}
+			}).done(function(data){
+				$('.error-display').text('').hide();
+				if(JSON.parse(data))
+				{
+					var data =  JSON.parse(data);
+					var err  = data.portal.err;
+					var inserted  = data.portal.inserted;
+					if(err == 0 && inserted == 1)
+					{
+						$('#mapping_msg').html('<b style="color : green">Successfully Added.</b>').show();
+						$("#studentList").val('');
+						$("#courseList").val('');
+					}
+					else if(err == 1 && inserted == 0)
+					{
+						var msg  = data.portal.msg;
+						$('#mapping_msg').html('<b style="color : red">'+msg+'.</b>').show();	
+					}
+					else
+					{
+						var err_arr = data.portal.error_array_name;
+						for (var [key, value] of Object.entries(err_arr)) {
+							$('#'+key).text(value).show();
+						}
+					}
+				}
+			});	
+		}
+		
+	});
 	$(document).on("click",".delete_student",function(){
 		$('.error-display').text('').hide();
 		var stu_id = $(this).attr('id');
@@ -222,6 +379,7 @@ $(document).ready(function(){
 	});
 
 	$(document).on("click","#delconfrimYes",function(){
+		$('.error-display').text('').hide();
 		var type_flag  = $('#del_type_flag').val();
 		var id  = $('#running_id').val();
 		if(type_flag == 2)
@@ -237,7 +395,8 @@ $(document).ready(function(){
 				var err  = data.portal.err;
 				if(update == 1 && err == 0)
 				{
-					$('#delete_req').modal('show');
+					$('#delete_req').modal('hide');
+					$('#listCourse').trigger('click');
 				}
 			});
 		}
@@ -254,7 +413,8 @@ $(document).ready(function(){
 				var err  = data.portal.err;
 				if(update == 1 && err == 0)
 				{
-					$('#delete_req').modal('show');
+					$('#delete_req').modal('hide');
+					$('#listStudent').trigger('click');
 				}	
 			});
 		}
@@ -420,16 +580,18 @@ function clearRegistration()
 	$('#cDetail').val('');
 }
 
-function openPage(pageName) {
+function openPage(pageName,id) {
   clearRegistration();
-  var i, tabcontent, tablinks;
+  
+  var tabcontent, tablinks;
   $('.tabcontent').each(function(){
     $(this).hide()
   });
   $('.tablink').each(function(){
     $(this).css("background-color", "")
   });
-  $('#'+pageName).show();  
+  $('#'+pageName).show();
+  $('#'+id).css("background-color", "red");  
 }
 
 

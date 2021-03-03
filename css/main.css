@@ -18,6 +18,7 @@ body, html {
   padding: 14px 16px;
   font-size: 17px;
   width: 16%;
+  border-radius : 0px;
 }
 .nav-bar{
   margin-left:45px; 
@@ -70,3 +71,17 @@ textarea:focus {
 .modal-dialog{
   margin-top: 10%;
 }
+.selectMar{
+  margin-left: 22%;
+  width: 60%;
+}
+.cour_subErr,.stu_subErr{
+  display: block;
+  margin-left: 22%;
+}
+.mapping{
+  width: 15%;
+  margin-left: 18%;
+  margin-top: 50px;
+}
+#add{font-size: 51px;cursor: pointer;}
