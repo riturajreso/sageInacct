@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="./css/main.css"> 
-	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css"> 
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 </head>
 <body>
 	<div class="nav-bar">
@@ -13,7 +13,6 @@
 		<button class="tablink" onclick="openPage('Subscribe')">Subscribe</button>
 		<button class="tablink" onclick="openPage('Report')">Report</button>	
 	</div>
-	
 	<div id="Registration" class="tabcontent">
 		<h3>Registration</h3>
 		<span id="regisMsg" class="error-display"></span>
@@ -115,8 +114,70 @@
 		<p>Get in touch, or swing by for a cup of coffee.</p>
 	</div>
 	<div id="Report" class="tabcontent">
-		<h3>Report</h3>
-		
+		<h3>Report</h3>	
+	</div>
+
+	<div class="modal fade" id="edit_req" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Edit</h4>
+				</div>
+				<div class="modal-body" id="editStudent" style="display: none;">
+					<div class="row diff">
+					  <div class="col-sm-3"><label>First Name <span class="red">*</span></label></div>
+					  <div class="col-sm-4">
+					  	<input type="text" name="efname" id="efname" >
+					  	<span class="red error-display efnameErr" id="efnameErr"></span>
+					  </div>
+					</div>
+					<div class="row diff">
+					  <div class="col-sm-3"><label>Last Name <span class="red">*</span></label></div>
+					  <div class="col-sm-4">
+					  	<input type="text" name="elname" id="elname" >
+					  	<span class="red error-display elnameErr" id="elnameErr"></span>
+					  </div>
+					</div>
+				</div>
+				<div class="modal-body" id="editCourse" style="display: none;">
+					<div class="row diff">
+					  <div class="col-sm-2"><label>Course <span class="red">*</span></label></div>
+					  <div class="col-sm-4">
+					  	<input type="text" name="eCname" id="eCname" >
+					  	<span class="red error-display eCnameErr" id="eCnameErr"></span>
+					  </div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="running_id" value="" id="running_id">
+					<input type="hidden" name="edit_type_flag" value="" id="edit_type_flag">
+					<button type="button" class="btn btn-success" id="editconfrimYes">Yes</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>	      
+		</div>
+	</div>
+
+	<div class="modal fade" id="delete_req" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Delete</h4>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure want to delete?</p>
+					<span class="red error-display" id="error_log"></span>
+				</div>
+				<div class="modal-footer">
+					<input type="hidden" name="running_id" value="" id="running_id">
+					<input type="hidden" name="del_type_flag" value="" id="del_type_flag">
+					<button type="button" class="btn btn-success" id="delconfrimYes">Yes</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>	      
+		</div>
 	</div>
 	<script type="text/javascript" src="./js/jquery-3.5.1.min.js"></script>
 	<script type="text/javascript" src="./js/bootstrap.min.js"></script>

@@ -100,7 +100,7 @@ class Modal {
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration');
+            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1');
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -117,7 +117,7 @@ class Modal {
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course');
+            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1');
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -126,6 +126,130 @@ class Modal {
         catch(PDOException $ex){
             return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));
         }
-    }       
+    } 
+
+    public function editStudentList($stu_id)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('SELECT stu_name,stu_Lname FROM registration WHERE stu_id LIKE(:stu_id)');
+            $data = [
+                'stu_id' => $stu_id
+            ];
+            $statement->execute($data);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            return json_encode(array('portal' => array('err' => 0, 'get' => 0,'msg'=>'success','result'=>$result)));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));
+        }    
+    } 
+
+    public function editCourse($c_id)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('SELECT cname FROM course WHERE cid LIKE(:c_id)');
+            $data = [
+                'c_id' => $c_id
+            ];
+
+            $statement->execute($data);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result)));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));
+        }    
+    } 
+
+    public function updateCourseDetails($cid,$eCname)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('UPDATE course SET cname=(:eCname) WHERE cid = (:cid)');
+            $data = [
+                'eCname' => $eCname,
+                'cid'=>$cid
+            ];
+            $statement->execute($data);
+            
+            return json_encode(array('portal' => array('err' => 0, 'update' => 1,'msg'=>'success')));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'update' => 0,'msg'=>$ex)));
+        }    
+    }
+
+    public function updateStudentDetails($stu_id,$efname,$elname)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('UPDATE registration SET stu_name=:efname,stu_Lname=:elname WHERE stu_id = (:stu_id)');
+            $data = [
+                'efname' => $efname,
+                'elname'=>$elname,
+                'stu_id' => $stu_id
+            ];
+            
+            $statement->execute($data);
+            
+            return json_encode(array('portal' => array('err' => 0, 'update' => 1,'msg'=>'success')));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'update' => 0,'msg'=>$ex)));
+        }    
+    }
+
+    public function delCourse($cid)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('UPDATE course SET isActive=:flag WHERE cid = (:cid)');
+            $data = [
+                'flag'=> 0,
+                'cid'=>$cid
+            ];
+            $statement->execute($data);
+            
+            return json_encode(array('portal' => array('err' => 0, 'update' => 1,'msg'=>'success')));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'update' => 0,'msg'=>$ex)));
+        }    
+    }
+
+    public function delStudent($stu_id)
+    {  
+        $db = dbConnect::getInstance();
+        $connect = $db->getConnect();
+        try 
+        {
+            $statement = $connect->prepare('UPDATE registration SET isActive=:flag WHERE stu_id = (:stu_id)');
+            $data = [
+                'flag'=> 0,
+                'stu_id' => $stu_id
+            ];
+            
+            $statement->execute($data);
+            
+            return json_encode(array('portal' => array('err' => 0, 'update' => 1,'msg'=>'success')));
+        }
+        catch(PDOException $ex){
+            return json_encode(array('portal' => array('err' => 1, 'update' => 0,'msg'=>$ex)));
+        }    
+    }    
 }  
 ?> 

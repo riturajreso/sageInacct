@@ -23,6 +23,7 @@ $(document).ready(function(){
 					var inserted  = data.portal.inserted;
 					if(err == 0 && inserted == 1)
 					{
+						clearRegistration();
 						$('#regisMsg').html('<b style="color : green">Successfully Added.</b>').show();
 					}
 					else if(err == 1 && inserted == 0)
@@ -64,6 +65,7 @@ $(document).ready(function(){
 					var inserted  = data.portal.inserted;
 					if(err == 0 && inserted == 1)
 					{
+						clearRegistration();
 						$('#courseMsg').html('<b style="color : green">Successfully Added.</b>').show();
 					}
 					else if(err == 1 && inserted == 0)
@@ -100,7 +102,7 @@ $(document).ready(function(){
 				for(var i=0; i < count ; i++){
 					html += '<tr>';
 					html += '<td>';
-        		    html += '<span data-toggle="tooltip"  data-trigger="hover" data-placement="top" title="Edit"><a href="#" class="edit_lazarusDL icon-green" id="'+stuList[i].stu_id+'"><span aria-hidden="true" class="glyphicon glyphicon-pencil"></span></a></span>';
+        		    html += '<a href="#" class="edit_student" id="'+stuList[i].stu_id+'">Edit</a>';
         			html += '</td>';
 
         			html += '<td>';
@@ -112,11 +114,11 @@ $(document).ready(function(){
         			html += '</td>';
 					
 					html += '<td>';
-					html += '<span data-toggle="tooltip"  data-trigger="hover" data-placement="top" title="Delete"><a href="#" class="edit_lazarusDL icon-green" id="'+stuList[i].stu_id+'"><span aria-hidden="true" class="glyphicon glyphicon-trash"></span></a></span>';
+					html += '<a href="#" class="delete_student icon-green" id="'+stuList[i].stu_id+'">Delete</a>';
         			html += '</td>';
         			html += '</tr>';        
 				}
-				$('#studentListTBody').append(html);
+				$('#studentListTBody').html(html);
             	$('[data-toggle="tooltip"]').tooltip();
 			}
 		}).fail(function(){
@@ -138,7 +140,7 @@ $(document).ready(function(){
 			for(var i=0; i < count ; i++){
 				html += '<tr>';
 				html += '<td>';
-    		    html += '<span data-toggle="tooltip"  data-trigger="hover" data-placement="top" title="Edit"><a href="#" class="edit_lazarusDL icon-green" id="'+courseList[i].stu_id+'"><span aria-hidden="true" class="glyphicon glyphicon-pencil"></span></a></span>';
+    		    html += '<a href="#" class="edit_Course icon-green" id="'+courseList[i].cid+'">Edit</a>';
     			html += '</td>';
 
     			html += '<td>';
@@ -146,16 +148,207 @@ $(document).ready(function(){
     			html += '</td>';
 
     			html += '<td>';
-				html += '<span data-toggle="tooltip"  data-trigger="hover" data-placement="top" title="Delete"><a href="#" class="edit_lazarusDL icon-green" id="'+courseList[i].stu_id+'"><span aria-hidden="true" class="glyphicon glyphicon-trash"></span></a></span>';
+				html += '<a href="#" class=delete_Course icon-green" id="'+courseList[i].cid+'">Delete</a>';
     			html += '</td>';
     			html += '</tr>';        
 			}
-			$('#courseListTBody').append(html);
+			$('#courseListTBody').html(html);
         	$('[data-toggle="tooltip"]').tooltip();
 		}).fail(function(){
 
 		});
 	});
+
+	$(document).on("click",".delete_student",function(){
+		$('.error-display').text('').hide();
+		var stu_id = $(this).attr('id');
+		$('#running_id').val(stu_id);
+		$('#del_type_flag').val(1);
+		$('#delete_req').modal('show');
+	});
+
+	$(document).on("click",".edit_student",function(){
+		$('.error-display').text('').hide();
+		var stu_id = $(this).attr('id');
+		$('#edit_type_flag').val(1);
+		$('#running_id').val(stu_id);
+		$.ajax({
+			url: "controller/Controller.php",
+			type: 'GET',
+			cache: false,
+			data: {'stu_id': stu_id,'function':'editStudentList'}
+		}).done(function(data){
+			if(JSON.parse(data)){
+				var data = JSON.parse(data);
+				var result = data.portal.result;
+				$('#efname').val(result[0].stu_name);
+				$('#elname').val(result[0].stu_Lname);
+			}
+		});
+		
+		$('#editCourse').hide();
+		$('#editStudent').show();
+		$('#edit_req').modal('show');
+	});
+
+	$(document).on("click",".delete_Course",function(){
+		$('.error-display').text('').hide();
+		var c_id = $(this).attr('id');
+		$('#running_id').val(c_id);
+		$('#del_type_flag').val(2);
+		$('#delete_req').modal('show');
+	});
+
+	$(document).on("click",".edit_Course",function(){
+		$('.error-display').text('').hide();
+		var c_id = $(this).attr('id');
+		$('#edit_type_flag').val(2);
+		$('#running_id').val(c_id);
+		$.ajax({
+			url: "controller/Controller.php",
+			type: 'GET',
+			cache: false,
+			data: {'c_id': c_id,'function':'editCourse'}
+		}).done(function(data){
+			if(JSON.parse(data)){
+				var data = JSON.parse(data);
+				var result = data.portal.result;
+				$('#eCname').val(result[0].cname);
+			}
+		});
+		$('#editStudent').hide();
+		$('#editCourse').show();
+		$('#edit_req').modal('show');
+	});
+
+	$(document).on("click","#delconfrimYes",function(){
+		var type_flag  = $('#del_type_flag').val();
+		var id  = $('#running_id').val();
+		if(type_flag == 2)
+		{
+			$.ajax({
+				url: "controller/Controller.php",
+				type: 'POST',
+				cache: false,
+				data: {'id': id, 'function':'delCourse'}
+			}).done(function(data){
+				var data = JSON.parse(data);
+				var update  = data.portal.update;
+				var err  = data.portal.err;
+				if(update == 1 && err == 0)
+				{
+					$('#delete_req').modal('show');
+				}
+			});
+		}
+		else if(type_flag == 1)
+		{
+			$.ajax({
+				url: "controller/Controller.php",
+				type: 'POST',
+				cache: false,
+				data: {'id': id, 'function':'delStudent'}
+			}).done(function(data){
+				var data = JSON.parse(data);
+				var update  = data.portal.update;
+				var err  = data.portal.err;
+				if(update == 1 && err == 0)
+				{
+					$('#delete_req').modal('show');
+				}	
+			});
+		}
+	});
+
+	$(document).on("click","#editconfrimYes",function(){
+		$('.error-display').text('').hide();
+		var type_flag  = $('#edit_type_flag').val();
+		var id  = $('#running_id').val();
+		if(type_flag == 2)
+		{
+			var valid = 1;
+			if($('#eCname').val() =='' || $('#eCname').val() ==null || $('#eCname').val() == undefined)
+			{
+				valid = 0;
+				$("#eCnameErr").text("Please enter course name").show();	
+			}
+			if(valid==1)
+			{
+				var eCname = $('#eCname').val();
+				$.ajax({
+					url: "controller/Controller.php",
+					type: 'POST',
+					cache: false,
+					data: {'id': id, 'eCname':eCname,'function':'updateCourse'}
+				}).done(function(data){
+					if(JSON.parse(data))
+					{
+						var data = JSON.parse(data);
+						var update  = data.portal.update;
+						var err  = data.portal.err;
+						if(update == 1 && err == 0)
+						{
+							$('#edit_req').modal('hide');
+							$('#listCourse').trigger('click');
+						}
+						else
+						{
+							var err_arr = data.portal.error_array_name;
+							for (var [key, value] of Object.entries(err_arr)) {
+								$('#'+key).text(value).show();
+							}
+						}
+					}
+				})	
+			}			
+		}
+		else if(type_flag == 1)
+		{
+			var valid = 1;
+			if($('#efname').val() =='' || $('#efname').val() ==null || $('#efname').val() == undefined)
+			{
+				valid = 0;
+				$("#efnameErr").text("Please enter first name").show();	
+			}
+
+			if($('#elname').val() =='' || $('#elname').val() ==null || $('#elname').val() == undefined)
+			{
+				valid = 0;
+				$("#elnameErr").text("Please enter last name").show();	
+			}
+			if(valid==1)
+			{
+				var efname = $('#efname').val();
+				var elname = $('#elname').val();
+				$.ajax({
+					url: "controller/Controller.php",
+					type: 'POST',
+					cache: false,
+					data: {'id': id,'efname':efname,'elname':elname,'function':'updateStudent'}
+				}).done(function(data){
+					if(JSON.parse(data))
+					{
+						var data = JSON.parse(data);
+						var update  = data.portal.update;
+						var err  = data.portal.err;
+						if(update == 1 && err == 0)
+						{
+							$('#edit_req').modal('hide');
+							$('#listStudent').trigger('click');
+						}
+						else
+						{
+							var err_arr = data.portal.error_array_name;
+							for (var [key, value] of Object.entries(err_arr)) {
+								$('#'+key).text(value).show();
+							}
+						}
+					}
+				})	
+			}
+		}
+	});
+
 });
 
 function ValidateStu()

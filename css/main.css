@@ -67,3 +67,6 @@ textarea:focus {
 .table,.table-responsive{
   width: 60%;
 }
+.modal-dialog{
+  margin-top: 10%;
+}

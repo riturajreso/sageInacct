@@ -129,5 +129,146 @@
     {
     	echo $funObj->getCourseList();	
     }
+    else if($fun_type == 'editStudentList')
+    {
+    	$stu_id = $_REQUEST['stu_id'];
+    	if(isset($stu_id) && $stu_id!= null && $stu_id!= undefined)
+    	{
+    		echo $funObj->editStudentList($stu_id);	
+    	}
+    		
+    }
+    else if($fun_type == 'editCourse')
+    {
+    	$c_id = $_REQUEST['c_id'];
+    	if(isset($c_id) && $c_id!= null && $c_id!= undefined)
+    	{
+    		echo $funObj->editCourse($c_id);	
+    	}
+    }
+    else if($fun_type == 'updateStudent')
+    {
+    	$err = false;
+		$error_array_name = [];
+		$id = $_REQUEST['id'];
+    	if(isset($id) && $id!= null && $id!= undefined)
+    	{
+    		$stu_id  =  $id;
+    	}
+    	else
+    	{
+    		$error_array_name['efnameErr'] = "Error! Please try again.";
+		    $err = true;
+    	}
+		if (empty($_REQUEST['efname'])){  
+		    $error_array_name['efnameErr'] = "Error! You didn't enter the First Name.";
+		    $err = true;   
+		}
+		else
+		{  
+		    $efname = test_input($_REQUEST['efname']);
+		    if (!preg_match ("/^[a-zA-z]*$/", $efname)){
+		    	$error_array_name['fnameErr'] = "Only alphabets and whitespace are allowed.";
+		    	$err = true;  
+		    }    
+		}
 
+		if (empty($_REQUEST['elname'])){  
+		    $error_array_name['elnameErr'] = "Error! You didn't enter the Last Name.";   
+		    $err = true;
+		}
+		else
+		{  
+		    $elname = test_input($_REQUEST['elname']);
+		    if (!preg_match ("/^[a-zA-z]*$/", $elname)){
+		    	$error_array_name['lnameErr'] = "Only alphabets and whitespace are allowed.";
+		    	$err = true;  
+		    }  
+		}
+		if($err == true){
+			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
+		}
+		else
+		{
+			echo $funObj->updateStudentDetails($stu_id,$efname, $elname);	
+		}
+    }
+    else if($fun_type == 'updateCourse')
+    {
+    	$err = false;
+		$error_array_name = [];
+		$id = $_REQUEST['id'];
+    	if(isset($id) && $id!= null && $id!= undefined)
+    	{
+    		$cid  =  $id;
+    	}
+    	else
+    	{
+    		$error_array_name['eCnameErr'] = "Error! Please try again.";
+		    $err = true;
+    	}
+		if (empty($_REQUEST['eCname'])){  
+		    $error_array_name['eCnameErr'] = "Error! You didn't enter the Course Name.";
+		    $err = true;   
+		}
+		else
+		{  
+		    $eCname = test_input($_REQUEST['eCname']);
+		    if (!preg_match ("/^[a-zA-z]*$/", $eCname)){
+		    	$error_array_name['eCnameErr'] = "Only alphabets and whitespace are allowed.";
+		    	$err = true;  
+		    }    
+		}
+		if($err == true){
+			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
+		}
+		else
+		{
+			echo $funObj->updateCourseDetails($cid,$eCname);	
+		}	
+    }
+    else if($fun_type == 'delStudent')
+    {
+    	$err = false;
+		$error_array_name = [];
+		$id = $_REQUEST['id'];
+    	if(isset($id) && $id!= null && $id!= undefined)
+    	{
+    		$cid  =  $id;
+    	}
+    	else
+    	{
+    		$error_array_name['error_log'] = "Error! Please try again.";
+		    $err = true;
+    	}
+    	if($err == true){
+			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
+		}
+		else
+		{
+			echo $funObj->delStudent($cid);	
+		}
+    }
+    else if($fun_type == 'delCourse')
+    {
+    	$err = false;
+		$error_array_name = [];
+		$id = $_REQUEST['id'];
+    	if(isset($id) && $id!= null && $id!= undefined)
+    	{
+    		$cid  =  $id;
+    	}
+    	else
+    	{
+    		$error_array_name['error_log'] = "Error! Please try again.";
+		    $err = true;
+    	}
+    	if($err == true){
+			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
+		}
+		else
+		{
+			echo $funObj->delCourse($cid);	
+		}
+    }
 ?> 
