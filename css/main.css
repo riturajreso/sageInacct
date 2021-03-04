@@ -85,5 +85,6 @@ textarea:focus {
   margin-top: 50px;
 }
 #add{font-size: 51px;cursor: pointer;}
-.page-item{margin-left: 2px;}
-#pagination{margin-left: 47%;}
+.page-item,.page-item2{margin-left: 5px; cursor:  pointer;}
+#pagination,#pagination1{margin-left: 47%;}
+.visited{font-weight: bold;color: green}

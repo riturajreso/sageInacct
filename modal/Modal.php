@@ -94,45 +94,55 @@ class Modal {
         }    
     }
 
-    public function getStudentList() 
+    public function getStudentList($page) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
-        $pageCount = PAGINATION_COUNT;
         try 
-        {
-            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1 LIMIT ? ');
+        {   $page = $page;
+            $limit = 10;
+            $starting_limit = ($page-1)*$limit;
 
-            $statement->bindValue(1, $pageCount, PDO::PARAM_INT);
-            $statement->execute();
+            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1 ORDER BY stu_id DESC LIMIT ?,?');
+            $statement->execute([$starting_limit, $limit]);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
 
             $smt = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1');
             $smt->execute();
-            $result = $smt->fetchAll(PDO::FETCH_ASSOC);
+            $result2 = $smt->fetchAll(PDO::FETCH_ASSOC);
 
-            $total_records = count($result);  
-            $total_pages = ceil($total_records / $pageCount); 
+            $total_records = count($result2);  
+            $total_pages = ceil($total_records / $limit); 
 
-            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result,'total_page'=>$total_pages )));
+            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result,'total_page'=>$total_pages)));
         }
         catch(PDOException $ex){
             return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));
         }
     }
 
-    public function getCourseList() 
+    public function getCourseList($page) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1');
-            $statement->execute();
+            $page = $page;
+            $limit = 10;
+            $starting_limit = ($page-1)*$limit;
+
+            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1 ORDER BY cid DESC LIMIT ?,?' );
+            $statement->execute([$starting_limit, $limit]);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result)));
+            $smt = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1');
+            $smt->execute();
+            $result2 = $smt->fetchAll(PDO::FETCH_ASSOC);
+
+            $total_records = count($result2);  
+            $total_pages = ceil($total_records / $limit); 
+
+            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result,'total_page'=>$total_pages)));
         }
         catch(PDOException $ex){
             return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));

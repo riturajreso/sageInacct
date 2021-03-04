@@ -10,7 +10,7 @@ class dbConnect
         {
             $this->conn = new PDO(DATABASE . ":host=" . DB_HOST . ";dbname=" . DB_DATABASE, DB_USER, DB_PASSWORD);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+            $this->conn->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
         }
         catch(PDOException $e)
         {

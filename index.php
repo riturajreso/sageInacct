@@ -98,6 +98,8 @@
 	</div>
 	<div id="viewCourse" class="tabcontent">
 		<h3>Course List</h3>
+		<div id='pagination1'>
+		</div>
 		<div class="table-responsive">
           	<table class="table table-hover table-bordered" id="contents">
 	            <thead>

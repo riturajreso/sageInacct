@@ -88,14 +88,78 @@ $(document).ready(function(){
 		  	});
 		}		
 	});
+	$(document).on("click",".page-item",function(){
+		var pageClk = $(this).find('a').attr('value');
+		if(pageClk != '')
+		{
+			$('.error-display').text('').hide();
+			$.ajax({
+				url: "controller/Controller.php",
+				type: 'GET',
+				cache: false,
+				data: {'function':'getStudentList','page':pageClk}
+			}).done(function(data){
+				if(JSON.parse(data)){
+					var data = JSON.parse(data);
+					var count = data.portal.result.length;
+					var stuList  = data.portal.result;
+					var html = pageHtml = '';
+					if(count>0)
+					{
+						for(var i=0; i < count ; i++){
+							html += '<tr>';
+							html += '<td>';
+		        		    html += '<a href="#" class="edit_student" id="'+stuList[i].stu_id+'">Edit</a>';
+		        			html += '</td>';
 
+		        			html += '<td>';
+		        		    html += stuList[i].stu_name;
+		        			html += '</td>';
+
+		        			html += '<td>';
+		        		    html += stuList[i].stu_Lname;
+		        			html += '</td>';
+							
+							html += '<td>';
+							html += '<a href="#" class="delete_student icon-green" id="'+stuList[i].stu_id+'">Delete</a>';
+		        			html += '</td>';
+		        			html += '</tr>';        
+						}
+						var totalPage = data.portal.total_page;
+						for(var i = 1; i<=totalPage; i++)
+						{	
+							if(pageClk==i)
+							{
+								pageHtml+= "<span class='page-item'><a class='page-link visited' value="+i+">"+i+"</a></span>";	
+							}
+							else
+							{
+								pageHtml+= "<span class='page-item'><a class='page-link' value="+i+">"+i+"</a></span>";	
+							}
+							
+						}
+						$('#pagination').html(pageHtml);
+					}
+					else
+					{
+						html += '<span class="red">No records found.</span>';
+					}
+					$('#studentListTBody').html(html);
+	            	$('[data-toggle="tooltip"]').tooltip();
+				}
+			}).fail(function(){
+
+			});
+		}
+	});
 	$("#listStudent").on('click',function(){
 		$('.error-display').text('').hide();
+		var page = 1;
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'GET',
 			cache: false,
-			data: {'function':'getStudentList'}
+			data: {'function':'getStudentList','page':page}
 		}).done(function(data){
 			if(JSON.parse(data)){
 				var data = JSON.parse(data);
@@ -125,8 +189,16 @@ $(document).ready(function(){
 					}
 					var totalPage = data.portal.total_page;
 					for(var i = 1; i<=totalPage; i++)
-					{
-						pageHtml+= "<span class='page-item'><a class='page-link' value="+i+">"+i+"</a></span>";
+					{	
+						if(page==i)
+						{
+							pageHtml+= "<span class='page-item'><a class='page-link visited' value="+i+">"+i+"</a></span>";	
+						}
+						else
+						{
+							pageHtml+= "<span class='page-item'><a class='page-link' value="+i+">"+i+"</a></span>";	
+						}
+						
 					}
 					$('#pagination').html(pageHtml);
 				}
@@ -141,19 +213,77 @@ $(document).ready(function(){
 
 		});
 	});
+	$(document).on("click",".page-item2",function(){
+		var pageClk = $(this).find('a').attr('value');
+		if(pageClk != '')
+		{
+			$('.error-display').text('').hide();
+			$.ajax({
+				url: "controller/Controller.php",
+				type: 'GET',
+				cache: false,
+				data: {'function':'getCourseList','page':pageClk}
+			}).done(function(data){
+				var data = JSON.parse(data);
+				var count = data.portal.result.length;
+				var courseList  = data.portal.result;
+				var html = pageHtml = '';
+				if(count>0)
+				{
+					for(var i=0; i < count ; i++){
+						html += '<tr>';
+						html += '<td>';
+		    		    html += '<a href="#" class="edit_Course icon-green" id="'+courseList[i].cid+'">Edit</a>';
+		    			html += '</td>';
 
+		    			html += '<td>';
+		    		    html += courseList[i].cname;
+		    			html += '</td>';
+
+		    			html += '<td>';
+						html += '<a href="#" class=delete_Course icon-green" id="'+courseList[i].cid+'">Delete</a>';
+		    			html += '</td>';
+		    			html += '</tr>';        
+					}
+					var totalPage = data.portal.total_page;
+					for(var i = 1; i<=totalPage; i++)
+					{	
+						if(pageClk==i)
+						{
+							pageHtml+= "<span class='page-item2'><a class='page-link visited' value="+i+">"+i+"</a></span>";	
+						}
+						else
+						{
+							pageHtml+= "<span class='page-item2'><a class='page-link' value="+i+">"+i+"</a></span>";	
+						}
+						
+					}
+					$('#pagination1').html(pageHtml);
+				}
+				else
+				{
+					html += '<span class="red">No records found.</span>';
+				}
+				$('#courseListTBody').html(html);
+	        	$('[data-toggle="tooltip"]').tooltip();
+			}).fail(function(){
+
+			});
+		}
+	});
 	$("#listCourse").on('click',function(){
 		$('.error-display').text('').hide();
+		var page = 1;
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'GET',
 			cache: false,
-			data: {'function':'getCourseList'}
+			data: {'function':'getCourseList','page':page}
 		}).done(function(data){
 			var data = JSON.parse(data);
 			var count = data.portal.result.length;
 			var courseList  = data.portal.result;
-			var html = '';
+			var html = pageHtml = '';
 			if(count>0)
 			{
 				for(var i=0; i < count ; i++){
@@ -171,6 +301,20 @@ $(document).ready(function(){
 	    			html += '</td>';
 	    			html += '</tr>';        
 				}
+				var totalPage = data.portal.total_page;
+				for(var i = 1; i<=totalPage; i++)
+				{	
+					if(page==i)
+					{
+						pageHtml+= "<span class='page-item2'><a class='page-link visited' value="+i+">"+i+"</a></span>";	
+					}
+					else
+					{
+						pageHtml+= "<span class='page-item2'><a class='page-link' value="+i+">"+i+"</a></span>";	
+					}
+					
+				}
+				$('#pagination1').html(pageHtml);
 			}
 			else
 			{

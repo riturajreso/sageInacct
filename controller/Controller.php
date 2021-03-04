@@ -116,11 +116,19 @@
 	}
     else if($fun_type == 'getStudentList')
     {
-    	echo $funObj->getStudentList();	
+    	$page = $_REQUEST['page'];
+    	if(isset($page) && $page!= null)
+    	{	
+    		echo $funObj->getStudentList($page);	
+    	}	
     }
     else if($fun_type == 'getCourseList')
     {
-    	echo $funObj->getCourseList();	
+    	$page = $_REQUEST['page'];
+    	if(isset($page) && $page!= null)
+    	{
+    		echo $funObj->getCourseList($page);
+    	}	
     }
     else if($fun_type == 'editStudentList')
     {
@@ -267,13 +275,13 @@
     else if($fun_type == 'getAllDetails')
     {
     	$finalArray = [];
-    	$studentList = $funObj->getStudentList();
+    	$studentList = $funObj->getStudentList(1);
     	$studentList = json_decode($studentList,true);
     	if($studentList['portal']['err'] == 0)
     	{
     		$finalArray['student'] = $studentList['portal']['result'];
     	}
-    	$courseList = $funObj->getCourseList();	
+    	$courseList = $funObj->getCourseList(1);	
     	$courseList = json_decode($courseList,true);
     	if($courseList['portal']['err'] == 0)
     	{
