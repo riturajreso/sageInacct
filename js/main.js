@@ -101,7 +101,7 @@ $(document).ready(function(){
 				var data = JSON.parse(data);
 				var count = data.portal.result.length;
 				var stuList  = data.portal.result;
-				var html = '';
+				var html = pageHtml = '';
 				if(count>0)
 				{
 					for(var i=0; i < count ; i++){
@@ -122,7 +122,13 @@ $(document).ready(function(){
 						html += '<a href="#" class="delete_student icon-green" id="'+stuList[i].stu_id+'">Delete</a>';
 	        			html += '</td>';
 	        			html += '</tr>';        
-					}	
+					}
+					var totalPage = data.portal.total_page;
+					for(var i = 1; i<=totalPage; i++)
+					{
+						pageHtml+= "<span class='page-item'><a class='page-link' value="+i+">"+i+"</a></span>";
+					}
+					$('#pagination').html(pageHtml);
 				}
 				else
 				{

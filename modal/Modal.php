@@ -98,13 +98,24 @@ class Modal {
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
+        $pageCount = PAGINATION_COUNT;
         try 
         {
-            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1');
+            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1 LIMIT ? ');
+
+            $statement->bindValue(1, $pageCount, PDO::PARAM_INT);
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result)));
+
+            $smt = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1');
+            $smt->execute();
+            $result = $smt->fetchAll(PDO::FETCH_ASSOC);
+
+            $total_records = count($result);  
+            $total_pages = ceil($total_records / $pageCount); 
+
+            return json_encode(array('portal' => array('err' => 0, 'get' => 1,'msg'=>'success','result'=>$result,'total_page'=>$total_pages )));
         }
         catch(PDOException $ex){
             return json_encode(array('portal' => array('err' => 1, 'get' => 0,'msg'=>$ex,'result'=>'')));

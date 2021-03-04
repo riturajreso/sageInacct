@@ -54,6 +54,8 @@
 	</div>
 	<div id="viewStudent" class="tabcontent">
 		<h3>Student List</h3>
+		<div id='pagination'>
+		</div>	
 	    <div class="table-responsive">
           	<table class="table table-hover table-bordered" id="contents">
 	            <thead>

@@ -85,3 +85,5 @@ textarea:focus {
   margin-top: 50px;
 }
 #add{font-size: 51px;cursor: pointer;}
+.page-item{margin-left: 2px;}
+#pagination{margin-left: 47%;}
