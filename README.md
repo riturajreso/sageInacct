@@ -8,11 +8,11 @@
 **MySQL - DUMP** : db/saageInacct.sql
 
 **STACK Used**:
-	- HTML
-	- CSS
-	- Bootstrap
-	- jQuery
-	- PHP
-	- MySQL
+- HTML
+- CSS
+- Bootstrap
+- jQuery
+- PHP
+- MySQL
 
 **Author : Ritu Raj**
