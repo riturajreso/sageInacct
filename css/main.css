@@ -88,3 +88,12 @@ textarea:focus {
 .page-item,.page-item2{margin-left: 5px; cursor:  pointer;}
 #pagination,#pagination1{margin-left: 47%;}
 .visited{font-weight: bold;color: green}
+.search-stu .table{background:#fff;}
+.search-stu .table th{background:#F1F4F7; background-image: url('../images/bg.gif');
+  background-repeat: no-repeat;
+  background-position: center right;vertical-align: middle;
+  cursor: pointer;}
+.search-stu .table .remove_sort{
+  background-image:none; 
+  cursor: unset;
+}

@@ -94,7 +94,7 @@ class Modal {
         }    
     }
 
-    public function getStudentList($page) 
+    public function getStudentList($page,$sort,$sort_type) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
@@ -102,8 +102,17 @@ class Modal {
         {   $page = $page;
             $limit = 10;
             $starting_limit = ($page-1)*$limit;
-
-            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1 ORDER BY stu_id DESC LIMIT ?,?');
+            if($sort_type == "" || $sort == ""){
+                $sort_condition = " ORDER BY stu_id DESC ";
+            }
+            else if($sort == "firstName"){
+                $sort_condition = " ORDER BY stu_name ".$sort_type;
+            }
+            else if($sort == "lastName"){
+                $sort_condition = " ORDER BY stu_Lname ".$sort_type;
+            }
+            
+            $statement = $connect->prepare('SELECT stu_id,stu_name,stu_Lname, stu_phn, stu_dob FROM registration WHERE isActive = 1 '.$sort_condition.' LIMIT ?,?');
             $statement->execute([$starting_limit, $limit]);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -121,7 +130,7 @@ class Modal {
         }
     }
 
-    public function getCourseList($page) 
+    public function getCourseList($page,$sort,$sort_type) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
@@ -130,8 +139,14 @@ class Modal {
             $page = $page;
             $limit = 10;
             $starting_limit = ($page-1)*$limit;
-
-            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1 ORDER BY cid DESC LIMIT ?,?' );
+            if($sort_type == "" || $sort == ""){
+                $sort_condition = " ORDER BY cid DESC ";
+            }
+            else if($sort == "couseName"){
+                $sort_condition = " ORDER BY cname ".$sort_type;
+            }
+           
+            $statement = $connect->prepare('SELECT cid,cname,cdetails FROM course WHERE isActive = 1 '.$sort_condition.' LIMIT ?,?' );
             $statement->execute([$starting_limit, $limit]);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -238,7 +253,7 @@ class Modal {
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('UPDATE course SET isActive=:flag WHERE cid = (:cid)');
+            $statement = $connect->prepare('DELETE FROM `course` WHERE cid = (:cid)');
             $data = [
                 'flag'=> 0,
                 'cid'=>$cid
@@ -258,7 +273,7 @@ class Modal {
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('UPDATE registration SET isActive=:flag WHERE stu_id = (:stu_id)');
+            $statement = $connect->prepare('DELETE FROM `registration` WHERE stu_id = (:stu_id)');
             $data = [
                 'flag'=> 0,
                 'stu_id' => $stu_id
@@ -297,13 +312,27 @@ class Modal {
         }    
     }
 
-    public function getReport()
+    public function getReport($sStudentName,$sCourseName)
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
         try 
         {
-            $statement = $connect->prepare('SELECT CONCAT(stu_name," ",stu_Lname) as Name, cname FROM course_registration LEFT JOIN course on course.cid = course_registration.cousre_id LEFT JOIN registration on registration.stu_id = course_registration.stud_id');
+            if(!empty($sStudentName))
+            {
+                $cond = " WHERE stu_name LIKE '%$sStudentName%' OR stu_Lname LIKE '%$sStudentName%'";
+            }
+            else if(!empty($sCourseName))
+            {
+                $cond = " WHERE cname LIKE '%$sCourseName%'";
+            }
+            else if(!empty($sCourseName) && !empty($sStudentName))
+            {
+                $cond = " WHERE cname LIKE '%$sCourseName%' AND (stu_name LIKE '%$sStudentName%' OR stu_Lname LIKE '%$sStudentName%')";
+            }
+
+            $statement = $connect->prepare('SELECT CONCAT(stu_name," ",stu_Lname) as Name, cname FROM course_registration JOIN course on course.cid = course_registration.cousre_id JOIN registration on registration.stu_id = course_registration.stud_id AND registration.isActive = 1'.$cond);
+
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 

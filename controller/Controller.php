@@ -117,17 +117,21 @@
     else if($fun_type == 'getStudentList')
     {
     	$page = $_REQUEST['page'];
+    	$sort = $_REQUEST['sort'];
+    	$sort_type = $_REQUEST['sort_type'];
     	if(isset($page) && $page!= null)
     	{	
-    		echo $funObj->getStudentList($page);	
+    		echo $funObj->getStudentList($page,$sort,$sort_type);	
     	}	
     }
     else if($fun_type == 'getCourseList')
     {
     	$page = $_REQUEST['page'];
+    	$sort = $_REQUEST['csort'];
+    	$sort_type = $_REQUEST['csort_type'];
     	if(isset($page) && $page!= null)
     	{
-    		echo $funObj->getCourseList($page);
+    		echo $funObj->getCourseList($page,$sort,$sort_type);
     	}	
     }
     else if($fun_type == 'editStudentList')
@@ -274,14 +278,18 @@
     }
     else if($fun_type == 'getAllDetails')
     {
+    	$sort = $_REQUEST['sort'];
+    	$sort_type = $_REQUEST['sort_type'];
     	$finalArray = [];
-    	$studentList = $funObj->getStudentList(1);
+    	$studentList = $funObj->getStudentList(1,$sort,$sort_type);
     	$studentList = json_decode($studentList,true);
     	if($studentList['portal']['err'] == 0)
     	{
     		$finalArray['student'] = $studentList['portal']['result'];
     	}
-    	$courseList = $funObj->getCourseList(1);	
+    	$sort = $_REQUEST['csort'];
+    	$sort_type = $_REQUEST['csort_type'];
+    	$courseList = $funObj->getCourseList(1,$sort,$sort_type);	
     	$courseList = json_decode($courseList,true);
     	if($courseList['portal']['err'] == 0)
     	{
@@ -323,6 +331,8 @@
     }
     else if($fun_type == 'getReport')
     {
-    	echo $funObj->getReport();	
+    	$sStudentName = $_REQUEST['sStudentName'];
+		$sCourseName = $_REQUEST['sCourseName'];
+    	echo $funObj->getReport($sStudentName,$sCourseName);	
     }
 ?> 

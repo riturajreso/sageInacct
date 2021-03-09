@@ -56,14 +56,14 @@
 		<h3>Student List</h3>
 		<div id='pagination'>
 		</div>	
-	    <div class="table-responsive">
+	    <div class="table-responsive search-stu">
           	<table class="table table-hover table-bordered" id="contents">
 	            <thead>
 	            	<tr>
-	                <th>Edit Action</th>
-		    		<th>First Name</th>
-	                <th>Last Name</th>
-		    		<th>Delete Action</th>
+	                <th class="remove_sort">Edit Action</th>
+		    		<th class="sort_profile" id='firstName'>First Name</th>
+	                <th class="sort_profile" id='lastName'>Last Name</th>
+		    		<th class="remove_sort">Delete Action</th>
 	              	</tr>
 	            </thead>
             	<tbody id="studentListTBody"></tbody>
@@ -100,13 +100,13 @@
 		<h3>Course List</h3>
 		<div id='pagination1'>
 		</div>
-		<div class="table-responsive">
+		<div class="table-responsive search-stu">
           	<table class="table table-hover table-bordered" id="contents">
 	            <thead>
 	            	<tr>
-	                <th>Edit Action</th>
-		    		<th>Course</th>
-		    		<th>Delete Action</th>
+	                <th class="remove_sort">Edit Action</th>
+		    		<th class="sort_course" id='couseName'>Course</th>
+		    		<th class="remove_sort">Delete Action</th>
 	              	</tr>
 	            </thead>
             	<tbody id="courseListTBody"></tbody>
@@ -139,6 +139,24 @@
 	</div>
 	<div id="Report" class="tabcontent">
 		<h3>Report</h3>
+		<div class="row">
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+              <div class="form-group">
+                <input type="text" class="form-control search-field" name="sStudentName" id="sStudentName" placeholder="Student Name">
+                <span class="red"><p class="error-display sStudentNameErr"></p></span>
+              </div>                      
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+              <div class="form-group">
+                <input type="text" class="form-control search-field" name="sCourseName" id="sCourseName" placeholder="Course Name">
+                 <span class="red"><p class="error-display sCourseNameErr"></p></span>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-3 col-xs-12">
+              <button class="btn btn-primary" id="searchBtn" type="button" data-toggle="tooltip" data-original-title="">Search</button>
+              <button class="btn btn-danger" id="resetBtn" type="button" data-toggle="tooltip" data-original-title="">Reset</button>
+            </div>
+		</div>
 		<div class="table-responsive">
           	<table class="table table-hover table-bordered" id="contents">
 	            <thead>
