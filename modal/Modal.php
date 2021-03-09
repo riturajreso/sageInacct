@@ -253,7 +253,6 @@ class Modal {
         {
             $statement = $connect->prepare('DELETE FROM `course` WHERE cid = (:cid)');
             $data = [
-                'flag'=> 0,
                 'cid'=>$cid
             ];
             $statement->execute($data);
@@ -273,10 +272,8 @@ class Modal {
         {
             $statement = $connect->prepare('DELETE FROM `registration` WHERE stu_id = (:stu_id)');
             $data = [
-                'flag'=> 0,
                 'stu_id' => $stu_id
             ];
-            
             $statement->execute($data);
             
             return json_encode(array('portal' => array('err' => 0, 'update' => 1,'msg'=>'success')));
@@ -334,7 +331,7 @@ class Modal {
                 $cond = " WHERE cname LIKE '%$sCourseName%' AND (stu_name LIKE '%$sStudentName%' OR stu_Lname LIKE '%$sStudentName%')";
             }
 
-            $statement = $connect->prepare('SELECT CONCAT(stu_name," ",stu_Lname) as Name, cname FROM course_registration JOIN course on course.cid = course_registration.cousre_id JOIN registration on registration.stu_id = course_registration.stud_id AND registration.isActive = 1'.$cond);
+            $statement = $connect->prepare('SELECT DISTINCT CONCAT(stu_name," ",stu_Lname) as Name, cname FROM course_registration JOIN course on course.cid = course_registration.cousre_id JOIN registration on registration.stu_id = course_registration.stud_id AND registration.isActive = 1'.$cond);
 
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);

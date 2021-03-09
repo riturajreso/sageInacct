@@ -333,7 +333,7 @@ $(document).ready(function(){
 
 	$("#subcribe").on('click',function(){
 		$('.error-display').text('').hide();
-		$('#addblock').html();
+		$('#addblock').html('');
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'POST',
