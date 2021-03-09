@@ -281,7 +281,7 @@
     	$sort = $_REQUEST['sort'];
     	$sort_type = $_REQUEST['sort_type'];
     	$finalArray = [];
-    	$studentList = $funObj->getStudentList(1,$sort,$sort_type);
+    	$studentList = $funObj->getStudentList(1,$sort,$sort_type,999);
     	$studentList = json_decode($studentList,true);
     	if($studentList['portal']['err'] == 0)
     	{
@@ -289,7 +289,7 @@
     	}
     	$sort = $_REQUEST['csort'];
     	$sort_type = $_REQUEST['csort_type'];
-    	$courseList = $funObj->getCourseList(1,$sort,$sort_type);	
+    	$courseList = $funObj->getCourseList(1,$sort,$sort_type,999);	
     	$courseList = json_decode($courseList,true);
     	if($courseList['portal']['err'] == 0)
     	{
@@ -299,35 +299,8 @@
     }
     else if($fun_type == 'saveMapping')
     {
-    	$err = false;
-		$error_array_name = [];
-		$sel_stu = $_REQUEST['sel_stu'];
-		$sel_cor = $_REQUEST['sel_cor'];
-    	if(isset($sel_stu) && $sel_stu!= null)
-    	{
-    		$sel_stu_id  =  $sel_stu;
-    	}
-    	else
-    	{
-    		$error_array_name['stu_subErr'] = "Error! Please try again.";
-		    $err = true;
-    	}
-    	if(isset($sel_cor) && $sel_cor!= null)
-    	{
-    		$sel_cor_id  =  $sel_cor;
-    	}
-    	else
-    	{
-    		$error_array_name['cour_subErr'] = "Error! Please try again.";
-		    $err = true;
-    	}
-    	if($err == true){
-			echo json_encode(array('portal'=>(array('err'=>1 ,'error_array_name'=>$error_array_name))));
-		}
-		else
-		{
-			echo $funObj->saveMapping($sel_stu_id,$sel_cor_id);	
-		}
+    	$obj = $_REQUEST['obj'];
+    	echo $funObj->saveMapping($obj);	
     }
     else if($fun_type == 'getReport')
     {

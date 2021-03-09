@@ -333,6 +333,7 @@ $(document).ready(function(){
 
 	$("#subcribe").on('click',function(){
 		$('.error-display').text('').hide();
+		$('#addblock').html();
 		$.ajax({
 			url: "controller/Controller.php",
 			type: 'POST',
@@ -349,12 +350,12 @@ $(document).ready(function(){
 				{
 					studentHtml += '<option value="'+studentList[i].stu_id+'">'+studentList[i].stu_name+' '+studentList[i].stu_Lname+'</option>';
 				}
-				$("#studentList").html(studentHtml);
+				$("#studentList_0").html(studentHtml);
 			}
 			else
 			{
-				$("#studentList").html(studentHtml);
-				$("#stu_subErr").text('No records found.').show();
+				$("#studentList_0").html(studentHtml);
+				$("#stu_subErr_0").text('No records found.').show();
 			}
 			if(courseList.length > 0)
 			{
@@ -362,12 +363,12 @@ $(document).ready(function(){
 				{
 					courseHtml += '<option value="'+courseList[i].cid+'">'+courseList[i].cname+'</option>';
 				}
-				$("#courseList").html(courseHtml);
+				$("#courseList_0").html(courseHtml);
 			}
 			else
 			{
-				$("#courseList").html(courseHtml);
-				$("#cour_subErr").text('No records found.').show();
+				$("#courseList_0").html(courseHtml);
+				$("#cour_subErr_0").text('No records found.').show();
 			}
 		});
 	});
@@ -461,35 +462,104 @@ $(document).ready(function(){
 
 		});		
 	});
-
+	var block_id = 1;
 	$("#add").on('click',function(){
 		$('.error-display').text('').hide();
 		$("#studentList").val('');
 		$("#courseList").val('');
+		block_id++;
+		var html ='<div class="row diff mapping_div">';
+		html +='<div class="col-md-3">';
+		html +='<select class="selectMar" id="studentList_'+block_id+'">';
+		html +='</select>';
+		html +='<span class="red error-display mappD stu_subErr_'+block_id+'" id="stu_subErr_'+block_id+'"></span>';	
+		html +='</div>';
+		html +='<div class="col-md-3">';
+		html +='<select class="selectMar" id="courseList_'+block_id+'">';
+		html +='</select>';
+		html +='<span class="red error-display mappD cour_subErr_'+block_id+'" id="cour_subErr_'+block_id+'"></span>';	
+		html +='</div>';
+		html +=' </div>';
+		$('#addblock').append(html);
+		$.ajax({
+			url: "controller/Controller.php",
+			type: 'POST',
+			cache: false,
+			data: {'function':'getAllDetails'}
+		}).done(function(data){
+			var data = JSON.parse(data);
+			var studentList  =  data.student;
+			var courseList  =  data.course;
+			var studentHtml = courseHtml = '<option value=""> Select </option>';
+			if(studentList.length > 0)
+			{
+				for(var i=0; i<studentList.length;i++)
+				{
+					studentHtml += '<option value="'+studentList[i].stu_id+'">'+studentList[i].stu_name+' '+studentList[i].stu_Lname+'</option>';
+				}
+				$("#studentList_"+block_id).html(studentHtml);
+			}
+			else
+			{
+				$("#studentList_"+block_id).html(studentHtml);
+				$("#stu_subErr_"+block_id).text('No records found.').show();
+			}
+			if(courseList.length > 0)
+			{
+				for(var i=0; i<courseList.length;i++)
+				{
+					courseHtml += '<option value="'+courseList[i].cid+'">'+courseList[i].cname+'</option>';
+				}
+				$("#courseList_"+block_id).html(courseHtml);
+			}
+			else
+			{
+				$("#courseList_"+block_id).html(courseHtml);
+				$("#cour_subErr_"+block_id).text('No records found.').show();
+			}
+		});
+
 	});
 		
 	$(document).on("click","#mapping",function(){
 		$('.error-display').text('').hide();
-		var sel_stu = $("#studentList").val();
-		var sel_cor = $("#courseList").val();
-		var valid = 1;
-		if(sel_stu ==null || sel_stu== '' || sel_stu== undefined)
+		var len = $('.mapping_div').length;
+		var obj = {};
+		for(var i = 0; i <= len; i++ )
 		{
-			valid  = 0;
-			$("#stu_subErr").text('Please select student.').show();
+			var sel_stu = $("#studentList_"+i).val();
+			var sel_cor = $("#courseList_"+i).val();
+			var valid = 1;
+			if(sel_stu ==null || sel_stu== '' || sel_stu== undefined)
+			{
+				valid  = 0;
+				$("#stu_subErr_"+i).text('Please select student.').show();
+			}
+			if(sel_cor ==null || sel_cor== '' || sel_cor== undefined)
+			{
+				valid  = 0;
+				$("#cour_subErr_"+i).text('Please select course.').show();
+			}
+			if(valid==1)
+			{
+				if(sel_stu in obj)
+				{
+					obj[sel_stu] = obj[sel_stu].concat(",").concat(sel_cor);
+				}
+				else
+				{
+					obj[sel_stu] = sel_cor;
+				}
+			}
 		}
-		if(sel_cor ==null || sel_cor== '' || sel_cor== undefined)
-		{
-			valid  = 0;
-			$("#cour_subErr").text('Please select course.').show();
-		}
+		
 		if(valid == 1)
 		{
 			$.ajax({
 				url: "controller/Controller.php",
 				type: 'POST',
 				cache: false,
-				data: {'function':'saveMapping','sel_stu':sel_stu,'sel_cor':sel_cor}
+				data: {'function':'saveMapping','obj':obj}
 			}).done(function(data){
 				$('.error-display').text('').hide();
 				if(JSON.parse(data))
@@ -506,7 +576,8 @@ $(document).ready(function(){
 					else if(err == 1 && inserted == 0)
 					{
 						var msg  = data.portal.msg;
-						$('#mapping_msg').html('<b style="color : red">'+msg+'.</b>').show();	
+						$('#mapping_msg').html('<b style="color : red">'+msg+'.</b>').show();
+						$('.selectMar').val('');	
 					}
 					else
 					{

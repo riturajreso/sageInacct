@@ -94,13 +94,12 @@ class Modal {
         }    
     }
 
-    public function getStudentList($page,$sort,$sort_type) 
+    public function getStudentList($page,$sort,$sort_type,$limit=10) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
         try 
         {   $page = $page;
-            $limit = 10;
             $starting_limit = ($page-1)*$limit;
             if($sort_type == "" || $sort == ""){
                 $sort_condition = " ORDER BY stu_id DESC ";
@@ -130,14 +129,13 @@ class Modal {
         }
     }
 
-    public function getCourseList($page,$sort,$sort_type) 
+    public function getCourseList($page,$sort,$sort_type,$limit=10) 
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
         try 
         {
             $page = $page;
-            $limit = 10;
             $starting_limit = ($page-1)*$limit;
             if($sort_type == "" || $sort == ""){
                 $sort_condition = " ORDER BY cid DESC ";
@@ -288,7 +286,7 @@ class Modal {
         }    
     }
 
-    public function saveMapping($sel_stu_id,$sel_cor_id)
+    public function saveMapping($object)
     {
         $db = dbConnect::getInstance();
         $connect = $db->getConnect();
@@ -297,11 +295,16 @@ class Modal {
             $connect->beginTransaction();
             $statement = $connect->prepare('INSERT INTO course_registration (stud_id,cousre_id)
                 VALUES (:sel_stu_id, :sel_cor_id)');
-            $data = [
-                'sel_stu_id' => $sel_stu_id,
-                'sel_cor_id' => $sel_cor_id,
-            ];
-            $statement->execute($data);
+
+            foreach ($object as $key => $value) {
+                $data = [
+                    'sel_stu_id' => $key,
+                    'sel_cor_id' => $value,
+                ];
+                $statement->execute($data);
+            }
+            
+            
             $id = $connect->lastInsertId();
             $connect->commit();
             return json_encode(array('portal' => array('err' => 0, 'inserted' => 1,'msg'=>'success','mapping_id'=>$id)));

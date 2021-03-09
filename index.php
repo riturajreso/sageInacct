@@ -115,23 +115,24 @@
 	</div>
 	<div id="Subscribe" class="tabcontent">
 		<h3>Student Course Registration</h3>
-		<div class="row diff">
+		<div class="row diff mapping_div">
 			<div class="col-md-3">
 				<center><label>Student </label></center>
-					<select class="selectMar" id="studentList">
+					<select class="selectMar" id="studentList_0">
 					</select>
-				<span class="red error-display stu_subErr" id="stu_subErr"></span>	
+				<span class="red error-display mappD stu_subErr_0" id="stu_subErr_0"></span>	
 			</div>
 			<div class="col-md-3">
 				<center><label>Course </label></center>
-					<select class="selectMar" id="courseList">
+					<select class="selectMar" id="courseList_0">
 					</select>
-				<span class="red error-display cour_subErr" id="cour_subErr"></span>	
+				<span class="red error-display mappD cour_subErr_0" id="cour_subErr_0"></span>	
 			</div>
 			<div class="col-md-3">
 				<span class="glyphicon glyphicon-plus" id="add" title="Add Another"></span>
 			</div>	
 		</div>
+		<div id=addblock></div>
 		<div class="row diff">
 			<input type="button" class="mapping" name="mapping" id="mapping" value="Submit">
 			<span class="error-display" id="mapping_msg"></span>
